@@ -1,37 +1,53 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import Home from "./pages/home";
-import SignIn from "./pages/sign-in";
-import SignUp from "./pages/sign-up";
-import { Toaster } from "react-hot-toast";
-import { useAuthStore } from "./store/useAuthStore";
-import { useEffect } from "react";
+import {useEffect} from "react"
+import {Route, Routes} from "react-router-dom"
+import {Toaster} from "react-hot-toast"
+import {Loader} from "lucide-react"
+
+import {useAuthStore} from "./store/useAuthStore"
+
+// components
+import Home from "./pages/home"
+import SignIn from "./pages/sign-in"
+import SignUp from "./pages/sign-up"
+import ProfilePage from "./pages/profile"
+import Settings from "./pages/settings"
+import Navbar from "./components/navbar"
+import {useThemeStore} from "./store/useThemeStore"
 
 const App = () => {
-  const { checkUser, authUser } = useAuthStore();
+    const {checkUser, isCheckingUserLoader, authUser} = useAuthStore()
+    const {theme} = useThemeStore()
 
-  useEffect(() => {
-    checkUser();
-  }, [checkUser]);
+    useEffect(() => {
+        checkUser()
+    }, [checkUser])
 
-  return (
-    <>
-      <Toaster position="top-center" reverseOrder={false} />
-      <Routes>
-        <Route
-          path="/"
-          element={authUser ? <Home /> : <Navigate to="/sign-in" replace />}
-        />
-        <Route
-          path="/sign-in"
-          element={!authUser ? <SignIn /> : <Navigate to="/" replace />}
-        />
-        <Route
-          path="/sign-up"
-          element={!authUser ? <SignUp /> : <Navigate to="/" replace />}
-        />
-      </Routes>
-    </>
-  );
-};
+    if (!isCheckingUserLoader) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <Loader className="size-10 animate-spin" />
+            </div>
+        )
+    }
 
-export default App;
+    return (
+        <main data-theme={theme}>
+            <Toaster position="top-center" reverseOrder={false} />
+            {authUser ? <Navbar /> : null}
+
+            <Routes>
+                <Route path="/" element={<Home />} />
+
+                <Route path="/sign-in" element={<SignIn />} />
+
+                <Route path="/sign-up" element={<SignUp />} />
+
+                <Route path="/settings" element={<Settings />} />
+
+                <Route path="/profile" element={<ProfilePage />} />
+            </Routes>
+        </main>
+    )
+}
+
+export default App

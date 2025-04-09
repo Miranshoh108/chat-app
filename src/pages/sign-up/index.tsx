@@ -1,7 +1,4 @@
 import React, {useState} from "react"
-import {Link, useNavigate} from "react-router-dom"
-
-
 import AuthImagePattern from "../../components/auth-image-side"
 
 import {
@@ -13,6 +10,7 @@ import {
     MessageSquare,
     User,
 } from "lucide-react"
+import {Link, useNavigate} from "react-router-dom"
 import {useAuthStore} from "../../store/useAuthStore"
 
 interface FormData {
@@ -22,8 +20,10 @@ interface FormData {
 }
 
 const SignUp = () => {
+    const navigate = useNavigate()
+
     const {signUp, isSigninLoading} = useAuthStore()
-    const navigate = useNavigate();
+
     const [showPass, setShowPass] = useState<boolean>(false)
     const [formData, setFormData] = useState<FormData>({
         fullName: "",
@@ -34,7 +34,6 @@ const SignUp = () => {
     const loginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         await signUp(formData)
-        navigate("/");
     }
 
     return (
@@ -150,6 +149,9 @@ const SignUp = () => {
 
                     <button
                         disabled={isSigninLoading}
+                        onClick={() => {
+                            navigate("/")
+                        }}
                         type="submit"
                         className="btn btn-primary w-full">
                         {isSigninLoading ? (
@@ -164,7 +166,7 @@ const SignUp = () => {
                 </form>
 
                 <div className="text-center mt-5">
-                    <p className="text-base-content/60 max-[350px]:text-[12px]">
+                    <p className="text-base-content/60">
                         Already have an account{" "}
                         <Link to={"/sign-in"} className="link link-primary">
                             Sign in

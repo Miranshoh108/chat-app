@@ -1,8 +1,8 @@
 import React, {useState} from "react"
-import {Link, useNavigate} from "react-router-dom"
-
 import AuthImagePattern from "../../components/auth-image-side"
+
 import {Eye, EyeOff, Loader2, Lock, Mail, MessageSquare} from "lucide-react"
+import {Link, useNavigate} from "react-router-dom"
 import {useAuthStore} from "../../store/useAuthStore"
 
 interface FormData {
@@ -11,8 +11,9 @@ interface FormData {
 }
 
 const SignIn = () => {
+    const navigate = useNavigate()
     const {signIn, isLoginLoading} = useAuthStore()
-    const navigate = useNavigate();
+
     const [showPass, setShowPass] = useState<boolean>(false)
     const [formData, setFormData] = useState<FormData>({
         email: "",
@@ -22,7 +23,6 @@ const SignIn = () => {
     const loginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         await signIn(formData)
-        navigate("/");
     }
 
     return (
@@ -112,6 +112,7 @@ const SignIn = () => {
                     </div>
 
                     <button
+                        onClick={() => navigate("/")}
                         disabled={isLoginLoading}
                         type="submit"
                         className="btn btn-primary w-full">
@@ -127,7 +128,7 @@ const SignIn = () => {
                 </form>
 
                 <div className="text-center mt-5">
-                    <p className="text-base-content/60 max-[350px]:text-[12px]">
+                    <p className="text-base-content/60">
                         Don&apos;t have an account?{" "}
                         <Link to={"/sign-up"} className="link link-primary">
                             Create account
