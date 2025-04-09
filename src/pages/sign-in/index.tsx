@@ -72,7 +72,7 @@ const SignIn = () => {
                                 name="email"
                                 type="email"
                                 className="input w-full !outline-none !border-none !ring-0"
-                                placeholder="you@example.com"
+                                placeholder="muhammad2005@example.com"
                             />
                         </div>
                     </div>
