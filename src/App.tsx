@@ -1,53 +1,57 @@
-import {useEffect} from "react"
-import {Route, Routes} from "react-router-dom"
-import {Toaster} from "react-hot-toast"
-import {Loader} from "lucide-react"
+import { useEffect } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { Loader } from "lucide-react";
 
-import {useAuthStore} from "./store/useAuthStore"
+import { useAuthStore } from "./store/useAuthStore";
 
 // components
-import Home from "./pages/home"
-import SignIn from "./pages/sign-in"
-import SignUp from "./pages/sign-up"
-import ProfilePage from "./pages/profile"
-import Settings from "./pages/settings"
-import Navbar from "./components/navbar"
-import {useThemeStore} from "./store/useThemeStore"
+import Home from "./pages/home";
+import SignIn from "./pages/sign-in";
+import SignUp from "./pages/sign-up";
+import ProfilePage from "./pages/profile";
+import Settings from "./pages/settings";
+import Navbar from "./components/navbar";
+import { useThemeStore } from "./store/useThemeStore";
 
 const App = () => {
-    const {checkUser, isCheckingUserLoader, authUser} = useAuthStore()
-    const {theme} = useThemeStore()
+  const { checkUser, isCheckingUserLoader, authUser } = useAuthStore();
+  const { theme } = useThemeStore();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        checkUser()
-    }, [checkUser])
+  useEffect(() => {
+    checkUser();
+  }, [checkUser]);
 
-    if (!isCheckingUserLoader) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <Loader className="size-10 animate-spin" />
-            </div>
-        )
+  // ❗️ Tizimga kirmagan foydalanuvchini sign-in sahifasiga yuborish
+  useEffect(() => {
+    if (!authUser && isCheckingUserLoader) {
+      navigate("/sign-in");
     }
+  }, [authUser, isCheckingUserLoader, navigate]);
 
+  if (!isCheckingUserLoader) {
     return (
-        <main data-theme={theme}>
-            <Toaster position="top-center" reverseOrder={false} />
-            {authUser ? <Navbar /> : null}
+      <div className="flex items-center justify-center h-screen">
+        <Loader className="size-10 animate-spin" />
+      </div>
+    );
+  }
 
-            <Routes>
-                <Route path="/" element={<Home />} />
+  return (
+    <main data-theme={theme}>
+      <Toaster position="top-center" reverseOrder={false} />
+      {authUser ? <Navbar /> : null}
 
-                <Route path="/sign-in" element={<SignIn />} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/profile" element={<ProfilePage />} />
+      </Routes>
+    </main>
+  );
+};
 
-                <Route path="/sign-up" element={<SignUp />} />
-
-                <Route path="/settings" element={<Settings />} />
-
-                <Route path="/profile" element={<ProfilePage />} />
-            </Routes>
-        </main>
-    )
-}
-
-export default App
+export default App;
